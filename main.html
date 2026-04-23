@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OUT Library Hub | Open University of Tanzania - AI Enhanced</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        outBlue: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                            400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8',
+                            800: '#1e40af', 900: '#1e3a8a', 950: '#172554',
+                        },
+                        outGold: {
+                            50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d',
+                            400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        body: ['Open Sans', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                        'blob': 'blob 7s infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' }
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f8fafc;
+            overflow-x: hidden;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        /* Bubble Animation Canvas */
+        #bubble-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .glass-nav {
+            background: rgba(30, 58, 138, 0.95);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(to right, #fbbf24, #f59e0b, #fcd34d, #fbbf24);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .bg-blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: -1;
+            animation: blob 7s infinite;
+        }
+
+        .tilt-card {
+            transition: transform 0.1s;
+            transform-style: preserve-3d;
+        }
+
+        .a11y-widget {
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            z-index: 100;
+        }
+
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        body.high-contrast {
+            background: #000 !important;
+            color: #fff !important;
+        }
+        body.high-contrast .glass-panel, 
+        body.high-contrast .glass-nav,
+        body.high-contrast .bg-white {
+            background: #000 !important;
+            border: 1px solid #fff !important;
+            color: #fff !important;
+        }
+        body.high-contrast .text-slate-600,
+        body.high-contrast .text-slate-800 {
+            color: #fff !important;
+        }
+        body.high-contrast .bg-outBlue-600 {
+            background-color: #0000ff !important;
+        }
+        
+        body.dyslexia-mode {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif !important;
+            letter-spacing: 0.05em;
+            line-height: 1.8;
+        }
+
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e3a8a; 
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b; 
+        }
+
+        .gallery-item {
+            overflow: hidden;
+        }
+        .gallery-item img {
+            transition: transform 0.5s ease;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .category-tab {
+            transition: all 0.3s ease;
+        }
+        .category-tab.active {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(30, 58, 138, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .resource-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .resource-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+        }
+        
+        .oa-badge {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+        
+        .science-badge {
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+        }
+        
+        .textbook-badge {
+            background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+        }
+        
+        .course-badge {
+            background: linear-gradient(135deg, #db2777 0%, #f472b6 100%);
+        }
+
+        /* AI Features Styles */
+        .ai-pulse {
+            animation: aiPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes aiPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+
+        .voice-wave {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 20px;
+        }
+        
+        .voice-bar {
+            width: 3px;
+            background: linear-gradient(to top, #f59e0b, #1e3a8a);
+            border-radius: 3px;
+            animation: wave 1s ease-in-out infinite;
+        }
+        
+        @keyframes wave {
+            0%, 100% { height: 5px; }
+            50% { height: 20px; }
+        }
+
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+        }
+
+        /* Particle shapes */
+        .shape-circle { border-radius: 50%; }
+        .shape-hexagon { 
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        }
+        .shape-star {
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+        .shape-triangle {
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        .shape-diamond {
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
+
+        /* Floating animation variations */
+        .float-1 { animation: float1 8s ease-in-out infinite; }
+        .float-2 { animation: float2 10s ease-in-out infinite; }
+        .float-3 { animation: float3 12s ease-in-out infinite; }
+        .float-4 { animation: float4 9s ease-in-out infinite; }
+        
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-40px, -20px) rotate(-120deg); }
+            66% { transform: translate(30px, 40px) rotate(-240deg); }
+        }
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, -50px) scale(1.1); }
+        }
+        @keyframes float4 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(50px, 30px) rotate(90deg) scale(0.9); }
+            50% { transform: translate(0, 60px) rotate(180deg) scale(1.05); }
+            75% { transform: translate(-50px, 30px) rotate(270deg) scale(0.95); }
+        }
+
+        /* Smart search suggestions */
+        .suggestion-chip {
+            transition: all 0.2s ease;
+        }
+        .suggestion-chip:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            color: white;
+        }
+
+        /* Reading progress bar */
+        #reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(to right, #f59e0b, #fbbf24);
+            z-index: 9999;
+            transition: width 0.1s;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased relative">
+
+    <!-- Reading Progress Bar -->
+    <div id="reading-progress" style="width: 0%"></div>
+
+    <!-- Animated Bubble Canvas -->
+    <canvas id="bubble-canvas"></canvas>
+
+    <!-- Background Blobs -->
+    <div class="bg-blob bg-outBlue-300 w-96 h-96 rounded-full top-0 left-0 mix-blend-multiply float-1"></div>
+    <div class="bg-blob bg-outGold-300 w-96 h-96 rounded-full top-0 right-0 mix-blend-multiply float-2"></div>
+    <div class="bg-blob bg-purple-300 w-96 h-96 rounded-full -bottom-32 left-20 mix-blend-multiply float-3"></div>
+
+    <!-- Accessibility Widget -->
+    <div class="a11y-widget">
+        <button onclick="toggleA11yMenu()" class="bg-outGold-500 hover:bg-outGold-400 text-outBlue-900 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl transition transform hover:scale-110 border-4 border-white z-50 relative animate-bounce">
+            <i class="fas fa-universal-access"></i>
+        </button>
+        <div id="a11y-menu" class="hidden absolute bottom-16 left-0 bg-white rounded-xl shadow-2xl p-4 w-72 border-2 border-outBlue-100 space-y-3">
+            <h4 class="font-bold text-outBlue-900 border-b pb-2 mb-2 flex items-center gap-2">
+                <i class="fas fa-wheelchair"></i> Accessibility Tools
+            </h4>
+            <button onclick="toggleTTS()" id="tts-btn" class="w-full text-left px-3 py-2 rounded hover:bg-outBlue-50 flex items-center gap-2 transition">
+                <i class="fas fa-volume-up text-outBlue-600"></i> <span>Read Aloud (TTS)</span>
+            </button>
+            <button onclick="toggleContrast()" class="w-full text-left px-3 py-2 rounded hover:bg-outBlue-50 flex items-center gap-2 transition">
+                <i class="fas fa-adjust text-outBlue-600"></i> <span>High Contrast Mode</span>
+            </button>
+            <button onclick="toggleDyslexia()" class="w-full text-left px-3 py-2 rounded hover:bg-outBlue-50 flex items-center gap-2 transition">
+                <i class="fas fa-font text-outBlue-600"></i> <span>Dyslexia Friendly Font</span>
+            </button>
+            <button onclick="toggleCursor()" class="w-full text-left px-3 py-2 rounded hover:bg-outBlue-50 flex items-center gap-2 transition">
+                <i class="fas fa-mouse-pointer text-outBlue-600"></i> <span>Big Cursor</span>
+            </button>
+            <div class="pt-2 border-t">
+                <label class="text-xs font-bold text-slate-500">Text Size</label>
+                <div class="flex gap-2 mt-1">
+                    <button onclick="changeFontSize(-1)" class="flex-1 bg-slate-100 py-1 rounded hover:bg-slate-200 font-bold">A-</button>
+                    <button onclick="changeFontSize(1)" class="flex-1 bg-slate-100 py-1 rounded hover:bg-slate-200 font-bold">A+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Quick Actions Floating Panel -->
+    <div class="fixed top-24 right-6 z-40 flex flex-col gap-3">
+        <button onclick="toggleVoiceSearch()" class="bg-gradient-to-r from-outBlue-600 to-outBlue-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition ai-pulse" title="Voice Search">
+            <i class="fas fa-microphone"></i>
+        </button>
+        <button onclick="generateSmartCitation()" class="bg-gradient-to-r from-outGold-500 to-outGold-600 text-outBlue-900 w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition" title="AI Citation Generator">
+            <i class="fas fa-quote-right"></i>
+        </button>
+        <button onclick="getStudyRecommendations()" class="bg-gradient-to-r from-purple-500 to-purple-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition" title="AI Study Recommendations">
+            <i class="fas fa-brain"></i>
+        </button>
+    </div>
+
+    <!-- Announcement Ticker -->
+    <div class="bg-outGold-500 text-outBlue-900 py-2 font-bold text-sm relative z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 flex items-center">
+            <span class="bg-white px-2 py-0.5 rounded text-xs uppercase tracking-wider mr-4 flex-shrink-0">Notice</span>
+            <div class="marquee-container w-full">
+                <div class="marquee-content" id="announcement-ticker">
+                    🎓 Welcome to the AI-Enhanced OUT Library Portal! | 🤖 New AI Librarian with Voice Recognition | 📚 Smart Citation Generator Now Available | 🎯 Personalized Study Recommendations | 🖥️ 24/7 AI Support Enabled
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="glass-nav sticky top-0 z-40 text-white transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="w-12 h-12 bg-gradient-to-br from-outGold-300 to-outGold-500 rounded-full flex items-center justify-center text-outBlue-900 font-bold text-xl shadow-lg animate-pulse-slow group-hover:rotate-12 transition">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold tracking-tight font-sans">OUT Library</h1>
+                        <p class="text-xs text-outGold-300 font-medium tracking-wider uppercase">AI-Enhanced Knowledge Hub</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="hover:text-outGold-300 transition font-medium relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-outGold-400 transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#announcements" class="hover:text-outGold-300 transition font-medium relative group">
+                        News
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-outGold-400 transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#catalogue" class="hover:text-outGold-300 transition font-medium relative group">
+                        Catalogue
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-outGold-400 transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#resources" class="hover:text-outGold-300 transition font-medium relative group">
+                        Resources
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-outGold-400 transition-all group-hover:w-full"></span>
+                    </a>
+                    <a href="#gallery" class="hover:text-outGold-300 transition font-medium relative group">
+                        Gallery
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-outGold-400 transition-all group-hover:w-full"></span>
+                    </a>
+                    <button onclick="toggleChat()" class="bg-outGold-500 hover:bg-outGold-400 text-outBlue-900 px-6 py-2.5 rounded-full font-bold transition shadow-lg shadow-outGold-500/30 flex items-center gap-2 transform hover:-translate-y-1 hover:shadow-xl glow-effect">
+                        <i class="fas fa-robot ai-pulse"></i> AI Librarian
+                    </button>
+                </div>
+
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-outGold-300 text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-outBlue-900 border-t border-outGold-500/30">
+            <div class="px-4 pt-2 pb-4 space-y-1">
+                <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-outBlue-800">Home</a>
+                <a href="#announcements" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-outBlue-800">News & Events</a>
+                <a href="#resources" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-outBlue-800">Resources</a>
+                <a href="#gallery" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-outBlue-800">Gallery</a>
+                <button onclick="toggleChat()" class="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-outGold-300">Ask AI Librarian</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-20 pb-32 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-4xl mx-auto">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-outBlue-100 text-outBlue-800 text-sm font-bold mb-8 border border-outBlue-200 shadow-sm hover:shadow-md transition cursor-default ai-pulse">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <i class="fas fa-sparkles text-outGold-500 mr-1"></i>
+                    AI-Powered 4th Industrial Revolution Library
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl font-bold text-outBlue-900 mb-8 leading-tight font-sans">
+                    Discover the World's <br>
+                    <span class="gold-gradient-text text-glow">Knowledge</span>
+                </h1>
+                
+                <p class="text-xl text-slate-600 mb-12 max-w-2xl mx-auto">
+                    Experience the future of academic research with our AI-enhanced platform. Smart recommendations, voice search, and 24/7 intelligent assistance.
+                </p>
+
+                <!-- AI-Enhanced Search Bar -->
+                <div class="glass-panel p-4 rounded-2xl shadow-2xl max-w-3xl mx-auto transform hover:scale-[1.02] transition duration-300 border-2 border-outGold-300/30">
+                    <div class="flex flex-col md:flex-row gap-3">
+                        <div class="relative flex-1">
+                            <i class="fas fa-search absolute left-4 top-3.5 text-slate-400"></i>
+                            <input type="text" id="hero-search" placeholder="Search books, journals, articles..." 
+                                class="w-full pl-12 pr-12 py-3 rounded-xl border-2 border-slate-200 bg-white/80 focus:bg-white focus:border-outGold-400 focus:ring-4 focus:ring-outGold-100 outline-none transition font-medium"
+                                oninput="showSmartSuggestions(this.value)"
+                                onkeypress="handleSmartSearch(event)">
+                            <button onclick="toggleVoiceSearch()" class="absolute right-3 top-3 text-outBlue-600 hover:text-outGold-500 transition">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                        <select id="hero-search-type" class="bg-white/80 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-outGold-400 outline-none font-medium text-slate-700 cursor-pointer hover:bg-white transition">
+                            <option value="koha">📚 Library Catalogue</option>
+                            <option value="repo">🎓 Institutional Repository</option>
+                            <option value="googlescholar">🔍 Google Scholar</option>
+                            <option value="ai">🤖 AI Smart Search</option>
+                        </select>
+                        <button onclick="performHeroSearch()" class="bg-gradient-to-r from-outBlue-600 to-outBlue-700 hover:from-outBlue-700 hover:to-outBlue-800 text-white px-8 py-3 rounded-xl font-bold transition shadow-lg flex items-center justify-center gap-2 group">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                    
+                    <!-- Smart Suggestions -->
+                    <div id="smart-suggestions" class="hidden mt-3 flex flex-wrap gap-2 text-sm">
+                        <span class="text-slate-500 mr-2">Trending:</span>
+                        <span class="suggestion-chip px-3 py-1 bg-slate-100 rounded-full cursor-pointer" onclick="quickSearch('machine learning')">Machine Learning</span>
+                        <span class="suggestion-chip px-3 py-1 bg-slate-100 rounded-full cursor-pointer" onclick="quickSearch('sustainable agriculture')">Sustainable Agriculture</span>
+                        <span class="suggestion-chip px-3 py-1 bg-slate-100 rounded-full cursor-pointer" onclick="quickSearch('public health')">Public Health</span>
+                        <span class="suggestion-chip px-3 py-1 bg-slate-100 rounded-full cursor-pointer" onclick="quickSearch('education technology')">EdTech</span>
+                    </div>
+                </div>
+
+                <!-- AI Feature Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-3xl mx-auto">
+                    <div class="glass-panel p-3 rounded-xl text-center cursor-pointer hover:bg-white/90 transition" onclick="toggleChat()">
+                        <i class="fas fa-robot text-2xl text-outBlue-600 mb-1"></i>
+                        <div class="text-xs font-bold text-slate-700">AI Assistant</div>
+                    </div>
+                    <div class="glass-panel p-3 rounded-xl text-center cursor-pointer hover:bg-white/90 transition" onclick="toggleVoiceSearch()">
+                        <i class="fas fa-microphone text-2xl text-outGold-600 mb-1"></i>
+                        <div class="text-xs font-bold text-slate-700">Voice Search</div>
+                    </div>
+                    <div class="glass-panel p-3 rounded-xl text-center cursor-pointer hover:bg-white/90 transition" onclick="generateSmartCitation()">
+                        <i class="fas fa-quote-right text-2xl text-purple-600 mb-1"></i>
+                        <div class="text-xs font-bold text-slate-700">Smart Cite</div>
+                    </div>
+                    <div class="glass-panel p-3 rounded-xl text-center cursor-pointer hover:bg-white/90 transition" onclick="getStudyRecommendations()">
+                        <i class="fas fa-brain text-2xl text-cyan-600 mb-1"></i>
+                        <div class="text-xs font-bold text-slate-700">Study AI</div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+                    <div class="glass-panel p-4 rounded-xl text-center hover:-translate-y-2 transition duration-300 border-b-4 border-outBlue-600">
+                        <div class="text-3xl font-bold text-outBlue-600 counter" data-target="50000">0</div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wide font-bold mt-1">E-Books</div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl text-center hover:-translate-y-2 transition duration-300 border-b-4 border-outGold-500">
+                        <div class="text-3xl font-bold text-outGold-600 counter" data-target="120">0</div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wide font-bold mt-1">AI-Enhanced</div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl text-center hover:-translate-y-2 transition duration-300 border-b-4 border-outBlue-600">
+                        <div class="text-3xl font-bold text-outBlue-600 counter" data-target="800000">0</div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wide font-bold mt-1">Print Volumes</div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl text-center hover:-translate-y-2 transition duration-300 border-b-4 border-outGold-500">
+                        <div class="text-3xl font-bold text-outGold-600 counter" data-target="99">0</div>
+                        <div class="text-xs text-slate-500 uppercase tracking-wide font-bold mt-1">% AI Accuracy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Dashboard Section -->
+    <section id="ai-dashboard" class="py-12 bg-gradient-to-r from-outBlue-900 to-outBlue-800 text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-10 left-10 w-32 h-32 border-4 border-outGold-400 rounded-full float-1"></div>
+            <div class="absolute bottom-10 right-10 w-48 h-48 border-4 border-outGold-400 shape-hexagon float-2"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="flex-1">
+                    <h2 class="text-3xl font-bold mb-4 flex items-center gap-3">
+                        <i class="fas fa-brain text-outGold-400"></i>
+                        Your Personal AI Study Dashboard
+                    </h2>
+                    <p class="text-outBlue-200 mb-6">Track your research progress, get AI-curated reading lists, and optimize your study sessions.</p>
+                    
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-white/10 backdrop-blur rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-outGold-400" id="saved-papers">0</div>
+                            <div class="text-xs">Saved Papers</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-outGold-400" id="reading-time">0h</div>
+                            <div class="text-xs">Est. Reading</div>
+                        </div>
+                        <div class="bg-white/10 backdrop-blur rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-outGold-400" id="ai-suggestions">0</div>
+                            <div class="text-xs">AI Suggestions</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 w-full max-w-md">
+                    <div class="bg-white/10 backdrop-blur rounded-2xl p-6 border border-white/20">
+                        <h3 class="font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-magic text-outGold-400"></i>
+                            Quick AI Actions
+                        </h3>
+                        <div class="space-y-3">
+                            <button onclick="summarizeLastPaper()" class="w-full bg-white/20 hover:bg-white/30 rounded-lg p-3 text-left flex items-center gap-3 transition">
+                                <i class="fas fa-file-alt text-outGold-400"></i>
+                                <span class="text-sm">Summarize my last viewed paper</span>
+                            </button>
+                            <button onclick="findRelatedResources()" class="w-full bg-white/20 hover:bg-white/30 rounded-lg p-3 text-left flex items-center gap-3 transition">
+                                <i class="fas fa-project-diagram text-outGold-400"></i>
+                                <span class="text-sm">Find related resources</span>
+                            </button>
+                            <button onclick="generateReadingList()" class="w-full bg-white/20 hover:bg-white/30 rounded-lg p-3 text-left flex items-center gap-3 transition">
+                                <i class="fas fa-list text-outGold-400"></i>
+                                <span class="text-sm">Generate weekly reading list</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Announcements & Events Section -->
+    <section id="announcements" class="py-16 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-outBlue-900 mb-4">News & Announcements</h2>
+                <div class="w-24 h-1 bg-outGold-500 mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Featured Announcement -->
+                <div class="md:col-span-2 bg-gradient-to-br from-outBlue-900 to-outBlue-800 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-outGold-500 rounded-full filter blur-[80px] opacity-20 group-hover:opacity-30 transition"></div>
+                    <div class="relative z-10">
+                        <span class="bg-outGold-500 text-outBlue-900 text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block">
+                            <i class="fas fa-star mr-1"></i> AI Feature Launch
+                        </span>
+                        <h3 class="text-2xl font-bold mb-4">Meet Your New AI Librarian</h3>
+                        <p class="text-outBlue-100 mb-6">We've launched our most advanced AI assistant yet! Featuring voice recognition, smart citations, personalized recommendations, and 24/7 instant answers to all your research questions.</p>
+                        <div class="flex items-center gap-4 text-sm text-outBlue-200">
+                            <span><i class="far fa-calendar mr-2"></i> March 18, 2026</span>
+                            <span><i class="far fa-user mr-2"></i> Chief Librarian</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event List -->
+                <div class="space-y-4">
+                    <div class="glass-panel p-6 rounded-2xl border-l-4 border-outGold-500 hover:shadow-lg transition">
+                        <div class="text-outGold-600 font-bold text-sm mb-1">MAR 25</div>
+                        <h4 class="font-bold text-slate-800 mb-2">AI Tools Training Workshop</h4>
+                        <p class="text-sm text-slate-600">Learn to use our new AI features effectively.</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border-l-4 border-outBlue-500 hover:shadow-lg transition">
+                        <div class="text-outBlue-600 font-bold text-sm mb-1">APR 02</div>
+                        <h4 class="font-bold text-slate-800 mb-2">Smart Citation Seminar</h4>
+                        <p class="text-sm text-slate-600">Master AI-powered citation generation.</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border-l-4 border-purple-500 hover:shadow-lg transition">
+                        <div class="text-purple-600 font-bold text-sm mb-1">APR 10</div>
+                        <h4 class="font-bold text-slate-800 mb-2">Research Optimization AI</h4>
+                        <p class="text-sm text-slate-600">Advanced techniques for faster research.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-20 space-y-24 mb-24">
+
+        <!-- Integrated Systems (KOHA & Repo) -->
+        <section id="catalogue" class="grid md:grid-cols-2 gap-8">
+            <!-- KOHA -->
+            <div class="group relative bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 hover:shadow-2xl transition duration-500 transform hover:-translate-y-2">
+                <div class="absolute inset-0 bg-gradient-to-r from-outBlue-600 to-outBlue-800 opacity-0 group-hover:opacity-5 transition duration-500"></div>
+                <div class="h-2 bg-outBlue-600"></div>
+                <div class="p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 bg-outBlue-100 rounded-2xl flex items-center justify-center text-outBlue-600 text-2xl group-hover:scale-110 transition">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-800">KOHA Catalogue</h3>
+                            <p class="text-sm text-slate-500">Physical Collections</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 mb-6">Search the Main Library and Regional Centre collections. Check availability, renew loans, and place holds.</p>
+                    <a href="https://koha.out.ac.tz" target="_blank" class="block w-full bg-outBlue-50 hover:bg-outBlue-100 text-outBlue-700 text-center font-bold py-3 rounded-xl transition border border-outBlue-200 group-hover:bg-outBlue-600 group-hover:text-white">
+                        Access KOHA <i class="fas fa-external-link-alt ml-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Repository -->
+            <div class="group relative bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 hover:shadow-2xl transition duration-500 transform hover:-translate-y-2">
+                <div class="h-2 bg-outGold-500"></div>
+                <div class="p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-14 h-14 bg-outGold-100 rounded-2xl flex items-center justify-center text-outGold-600 text-2xl group-hover:scale-110 transition">
+                            <i class="fas fa-archive"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-800">Institutional Repository</h3>
+                            <p class="text-sm text-slate-500">Theses & Research</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 mb-6">Access OUT faculty publications, student theses, dissertations, and research outputs. Open Access to the world.</p>
+                    <a href="https://repository.out.ac.tz" target="_blank" class="block w-full bg-outGold-50 hover:bg-outGold-100 text-outGold-700 text-center font-bold py-3 rounded-xl transition border border-outGold-200 group-hover:bg-outGold-500 group-hover:text-white">
+                        Access Repository <i class="fas fa-external-link-alt ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- E-Resources Section - ORGANIZED INTO 5 CATEGORIES -->
+        <section id="resources" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-outBlue-900 mb-4">Electronic Resources</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto">
+                    Curated academic resources organized by access type and discipline. 
+                    <span class="text-outGold-600 font-bold">Gold locks</span> indicate premium subscribed resources.
+                </p>
+            </div>
+
+            <!-- Category Filter Tabs -->
+            <div class="flex flex-wrap justify-center gap-3 mb-12 sticky top-24 z-30 bg-slate-50/90 backdrop-blur-md p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <button onclick="filterResources('all')" class="category-tab active px-6 py-3 rounded-full font-bold text-sm transition shadow-sm bg-white text-slate-600 hover:bg-slate-50" data-filter="all">
+                    <i class="fas fa-th-large mr-2"></i>All Resources
+                </button>
+                <button onclick="filterResources('premium')" class="category-tab px-6 py-3 rounded-full font-bold text-sm transition shadow-sm bg-white text-slate-600 hover:bg-slate-50 border-l-4 border-amber-500" data-filter="premium">
+                    <i class="fas fa-crown mr-2 text-amber-500"></i>Premium Databases
+                </button>
+                <button onclick="filterResources('oajournals')" class="category-tab px-6 py-3 rounded-full font-bold text-sm transition shadow-sm bg-white text-slate-600 hover:bg-slate-50 border-l-4 border-emerald-500" data-filter="oajournals">
+                    <i class="fas fa-book-open mr-2 text-emerald-500"></i>Open Access Journals
+                </button>
+                <button onclick="filterResources('oscience')" class="category-tab px-6 py-3 rounded-full font-bold text-sm transition shadow-sm bg-white text-slate-600 hover:bg-slate-50 border-l-4 border-cyan-500" data-filter="oscience">
+                    <i class="fas fa-microscope mr-2 text-cyan-500"></i>Open Science Journals
+                </button>
+                <button onclick="filterResources('textbooks')" class="category-tab px-6 py-3 rounded-full font-bold text-sm transition shadow-sm bg-white text-slate-600 hover:bg-slate-50 border-l-4 border-purple-500" data-filter="textbooks">
+                    <i class="fas fa-book mr-2 text-purple-500"></i>Open Textbooks
+                </button>
+                <button onclick="filterResources('courseware')" class="category-tab px-6 py-3 rounded-full font-bold text-sm transition shadow-sm bg-white text-slate-600 hover:bg-slate-50 border-l-4 border-pink-500" data-filter="courseware">
+                    <i class="fas fa-laptop-code mr-2 text-pink-500"></i>Open Courseware
+                </button>
+            </div>
+
+            <!-- Category Description Cards -->
+            <div id="category-info" class="mb-8 hidden">
+                <div class="glass-panel p-6 rounded-2xl border-l-4 bg-gradient-to-r from-white to-slate-50 shadow-lg">
+                    <h3 id="cat-title" class="text-2xl font-bold text-outBlue-900 mb-2"></h3>
+                    <p id="cat-desc" class="text-slate-600"></p>
+                </div>
+            </div>
+
+            <!-- Resources Grid -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="resource-grid">
+                <!-- Content injected via JS -->
+            </div>
+        </section>
+
+        <!-- Photo Gallery Section -->
+        <section id="gallery" class="bg-slate-50 rounded-[2rem] p-8 md:p-12 shadow-inner">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-outBlue-900 mb-4">Library Gallery</h2>
+                <p class="text-slate-600">Explore our spaces and facilities</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">
+                <div class="gallery-item col-span-2 row-span-2 rounded-2xl shadow-lg relative group cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1507842217121-9e962835d771?auto=format&fit=crop&w=800&q=80" alt="Library Interior" class="w-full h-full object-cover rounded-2xl">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center rounded-2xl">
+                        <p class="text-white font-bold text-lg">Main Reading Hall</p>
+                    </div>
+                </div>
+                <div class="gallery-item rounded-2xl shadow-lg relative group cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=400&q=80" alt="Books" class="w-full h-full object-cover rounded-2xl">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center rounded-2xl">
+                        <p class="text-white font-bold">Collections</p>
+                    </div>
+                </div>
+                <div class="gallery-item rounded-2xl shadow-lg relative group cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&w=400&q=80" alt="Study Area" class="w-full h-full object-cover rounded-2xl">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center rounded-2xl">
+                        <p class="text-white font-bold">Study Area</p>
+                    </div>
+                </div>
+                <div class="gallery-item col-span-2 rounded-2xl shadow-lg relative group cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80" alt="Computer Lab" class="w-full h-full object-cover rounded-2xl">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center rounded-2xl">
+                        <p class="text-white font-bold text-lg">Digital Resource Center</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reference Managers -->
+        <section id="ref-managers" class="bg-gradient-to-br from-slate-900 to-outBlue-900 rounded-[2rem] p-8 md:p-16 text-white relative overflow-hidden shadow-2xl">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-outGold-500 rounded-full filter blur-[100px] opacity-20 float-1"></div>
+            
+            <div class="relative z-10">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Research & Citation Tools</h2>
+                    <p class="text-outBlue-200">AI-enhanced reference management</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Zotero -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl hover:bg-white/20 transition group hover:-translate-y-2">
+                        <div class="w-12 h-12 bg-[#cc2936] rounded-lg flex items-center justify-center text-white font-bold text-xl mb-4 group-hover:scale-110 transition">Z</div>
+                        <h3 class="text-xl font-bold mb-2">Zotero</h3>
+                        <p class="text-sm text-slate-300 mb-4">Free, open-source with AI metadata extraction.</p>
+                        <a href="https://www.zotero.org" target="_blank" class="text-outGold-400 font-bold text-sm hover:text-outGold-300 flex items-center gap-1">
+                            Download <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- Mendeley -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl hover:bg-white/20 transition group hover:-translate-y-2">
+                        <div class="w-12 h-12 bg-[#9e1c46] rounded-lg flex items-center justify-center text-white font-bold text-xl mb-4 group-hover:scale-110 transition">M</div>
+                        <h3 class="text-xl font-bold mb-2">Mendeley</h3>
+                        <p class="text-sm text-slate-300 mb-4">AI-powered PDF annotation and recommendations.</p>
+                        <a href="https://www.mendeley.com" target="_blank" class="text-outGold-400 font-bold text-sm hover:text-outGold-300 flex items-center gap-1">
+                            Download <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- EndNote -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl hover:bg-white/20 transition group hover:-translate-y-2">
+                        <div class="w-12 h-12 bg-[#f04e23] rounded-lg flex items-center justify-center text-white font-bold text-xl mb-4 group-hover:scale-110 transition">En</div>
+                        <h3 class="text-xl font-bold mb-2">EndNote</h3>
+                        <p class="text-sm text-slate-300 mb-4">Industry standard with smart matching.</p>
+                        <a href="https://endnote.com" target="_blank" class="text-outGold-400 font-bold text-sm hover:text-outGold-300 flex items-center gap-1">
+                            Download <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Info Grid -->
+        <section class="grid md:grid-cols-3 gap-8">
+            <div class="glass-panel p-8 rounded-2xl border-t-4 border-outBlue-600 hover:shadow-xl transition float-1" style="animation-duration: 15s;">
+                <h3 class="font-bold text-lg text-outBlue-900 mb-4 flex items-center gap-2">
+                    <i class="fas fa-clock text-outGold-500"></i> Opening Hours
+                </h3>
+                <ul class="space-y-2 text-sm text-slate-600">
+                    <li class="flex justify-between"><span>Mon - Fri:</span> <span class="font-bold">8:45 AM - 9:00 PM</span></li>
+                    <li class="flex justify-between"><span>Saturday:</span> <span class="font-bold">10:00 AM - 9:00 PM</span></li>
+                    <li class="flex justify-between"><span>Sunday:</span> <span class="font-bold">10:00 AM - 2:00 PM</span></li>
+                </ul>
+            </div>
+
+            <div class="glass-panel p-8 rounded-2xl border-t-4 border-outGold-500 hover:shadow-xl transition float-2" style="animation-duration: 12s;">
+                <h3 class="font-bold text-lg text-outBlue-900 mb-4 flex items-center gap-2">
+                    <i class="fas fa-map-marker-alt text-outGold-500"></i> Location
+                </h3>
+                <p class="text-sm text-slate-600 mb-4">
+                    Open University of Tanzania<br>
+                    Kinondoni, Dar es Salaam<br>
+                    Tanzania
+                </p>
+                <a href="https://maps.google.com/?q=Open+University+of+Tanzania" target="_blank" class="text-outBlue-600 font-bold text-sm hover:underline">View on Map</a>
+            </div>
+
+            <div class="glass-panel p-8 rounded-2xl border-t-4 border-outBlue-600 hover:shadow-xl transition float-3" style="animation-duration: 18s;">
+                <h3 class="font-bold text-lg text-outBlue-900 mb-4 flex items-center gap-2">
+                    <i class="fas fa-envelope text-outGold-500"></i> Contact
+                </h3>
+                <p class="text-sm text-slate-600 mb-2">
+                    <i class="fas fa-envelope mr-2 text-outBlue-400"></i> librarian@out.ac.tz
+                </p>
+                <p class="text-sm text-slate-600">
+                    <i class="fas fa-phone mr-2 text-outBlue-400"></i> +255 22 2668992
+                </p>
+                <button onclick="toggleChat()" class="mt-4 w-full bg-outBlue-50 text-outBlue-700 py-2 rounded-lg font-bold text-sm hover:bg-outBlue-100 transition">
+                    Chat with AI Librarian
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-outBlue-950 text-white py-12 border-t border-outGold-500/20 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-10 left-1/4 w-20 h-20 bg-outGold-400 rounded-full float-1"></div>
+            <div class="absolute bottom-10 right-1/3 w-32 h-32 bg-outBlue-400 shape-hexagon float-2"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <div class="flex justify-center items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-outGold-500 rounded-full flex items-center justify-center text-outBlue-900 font-bold">OUT</div>
+                <h4 class="text-xl font-bold">Open University of Tanzania</h4>
+            </div>
+            <p class="text-outBlue-300 text-sm mb-6">
+                &copy; 2026 AI-Enhanced Library & Documentation Services. All rights reserved.
+            </p>
+            <div class="flex justify-center gap-6 text-outBlue-400">
+                <a href="#" class="hover:text-outGold-400 transition"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="hover:text-outGold-400 transition"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-outGold-400 transition"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="hover:text-outGold-400 transition"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AI Chat Widget -->
+    <div id="chat-widget" class="fixed bottom-24 right-6 w-[450px] bg-white rounded-2xl shadow-2xl border border-slate-200 hidden flex-col z-50 overflow-hidden transform transition-all duration-300 origin-bottom-right h-[600px]">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-outBlue-800 to-outBlue-900 p-4 flex justify-between items-center border-b border-outGold-500/30">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-outGold-500 rounded-full flex items-center justify-center text-outBlue-900 font-bold text-lg shadow-lg ai-pulse">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white">AI Librarian</h4>
+                    <p class="text-xs text-outBlue-200 flex items-center gap-1">
+                        <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                        Online with Voice Support
+                    </p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="toggleVoiceInChat()" class="text-white hover:text-outGold-400 transition" title="Voice Input">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button onclick="toggleChat()" class="text-white hover:text-outGold-400 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-4 bg-slate-50 space-y-4">
+            <!-- Welcome Message -->
+            <div class="flex gap-3">
+                <div class="w-8 h-8 rounded-full bg-outBlue-100 flex items-center justify-center text-outBlue-600 flex-shrink-0">
+                    <i class="fas fa-robot text-xs"></i>
+                </div>
+                <div class="bg-white p-3 rounded-lg rounded-tl-none shadow-sm text-sm text-slate-700 border border-slate-100 max-w-[85%]">
+                    <p class="mb-2">Hello! I'm your AI Librarian with advanced capabilities:</p>
+                    <ul class="list-disc list-inside text-xs text-slate-500 mb-2">
+                        <li>Voice search enabled</li>
+                        <li>Smart citations</li>
+                        <li>Personalized recommendations</li>
+                        <li>Research summarization</li>
+                    </ul>
+                    <p>Try: <span class="text-outBlue-600 italic">"Find agriculture journals"</span> or <span class="text-outBlue-600 italic">"Cite this paper"</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="px-4 py-2 bg-slate-100 border-t border-slate-200 flex gap-2 overflow-x-auto">
+            <button onclick="sendQuickMessage('Find me open access journals')" class="whitespace-nowrap px-3 py-1 bg-white rounded-full text-xs text-slate-600 hover:bg-outBlue-50 transition">Find OA Journals</button>
+            <button onclick="sendQuickMessage('Generate citation for a book')" class="whitespace-nowrap px-3 py-1 bg-white rounded-full text-xs text-slate-600 hover:bg-outBlue-50 transition">Cite Book</button>
+            <button onclick="sendQuickMessage('Recommend study resources')" class="whitespace-nowrap px-3 py-1 bg-white rounded-full text-xs text-slate-600 hover:bg-outBlue-50 transition">Study Recs</button>
+            <button onclick="sendQuickMessage('Summarize research process')" class="whitespace-nowrap px-3 py-1 bg-white rounded-full text-xs text-slate-600 hover:bg-outBlue-50 transition">How to Research</button>
+        </div>
+
+        <!-- Input -->
+        <div class="p-3 bg-white border-t border-slate-100">
+            <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
+                <input type="text" id="chat-input" placeholder="Ask me anything..." 
+                    class="flex-1 px-4 py-2 rounded-full border border-slate-200 focus:border-outBlue-500 focus:ring-2 focus:ring-outBlue-200 outline-none text-sm bg-slate-50">
+                <button type="button" onclick="toggleVoiceInChat()" class="text-slate-400 hover:text-outBlue-600 transition">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button type="submit" class="bg-outBlue-600 hover:bg-outBlue-700 text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow-md">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button onclick="toggleChat()" class="fixed bottom-6 right-6 bg-gradient-to-r from-outGold-500 to-outGold-600 hover:from-outGold-400 hover:to-outGold-500 text-outBlue-900 w-16 h-16 rounded-full shadow-2xl flex items-center justify-center text-2xl transition transform hover:scale-110 z-50 border-4 border-white animate-bounce glow-effect">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+
+    <!-- Voice Search Modal -->
+    <div id="voice-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[70] backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl text-center">
+            <div class="w-20 h-20 bg-gradient-to-r from-outBlue-600 to-outGold-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+                <i class="fas fa-microphone text-3xl text-white"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-outBlue-900 mb-2">Voice Search Active</h3>
+            <p class="text-slate-600 mb-6">Speak clearly to search for resources...</p>
+            <div class="voice-wave justify-center mb-6">
+                <div class="voice-bar" style="animation-delay: 0s"></div>
+                <div class="voice-bar" style="animation-delay: 0.1s"></div>
+                <div class="voice-bar" style="animation-delay: 0.2s"></div>
+                <div class="voice-bar" style="animation-delay: 0.3s"></div>
+                <div class="voice-bar" style="animation-delay: 0.4s"></div>
+            </div>
+            <button onclick="closeVoiceModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-6 py-2 rounded-full font-bold transition">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- Smart Citation Generator Modal -->
+    <div id="citation-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[70] backdrop-blur-sm">
+        <div class="bg-white rounded-2xl p-8 max-w-lg w-full mx-4 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-outBlue-900 flex items-center gap-2">
+                    <i class="fas fa-quote-right text-outGold-500"></i>
+                    AI Citation Generator
+                </h3>
+                <button onclick="closeCitationModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Resource Title</label>
+                    <input type="text" id="cite-title" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-outGold-400 outline-none" placeholder="Enter book or article title...">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Author</label>
+                        <input type="text" id="cite-author" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-outGold-400 outline-none" placeholder="Author name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Year</label>
+                        <input type="text" id="cite-year" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-outGold-400 outline-none" placeholder="2024">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Citation Style</label>
+                    <select id="cite-style" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-outGold-400 outline-none">
+                        <option value="apa">APA 7th Edition</option>
+                        <option value="mla">MLA 9th Edition</option>
+                        <option value="harvard">Harvard</option>
+                        <option value="chicago">Chicago</option>
+                        <option value="ieee">IEEE</option>
+                    </select>
+                </div>
+                
+                <div id="citation-result" class="hidden bg-slate-50 p-4 rounded-lg border-l-4 border-outGold-500">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Generated Citation</span>
+                        <button onclick="copyCitation()" class="text-outBlue-600 hover:text-outBlue-800 text-sm">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p id="citation-output" class="text-sm text-slate-800 font-mono break-all"></p>
+                </div>
+                
+                <button onclick="generateCitation()" class="w-full bg-gradient-to-r from-outBlue-600 to-outBlue-700 text-white py-3 rounded-xl font-bold hover:from-outBlue-700 hover:to-outBlue-800 transition">
+                    <i class="fas fa-magic mr-2"></i>Generate Citation
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Study Recommendations Modal -->
+    <div id="study-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[70] backdrop-blur-sm">
+        <div class="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4 shadow-2xl max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-outBlue-900 flex items-center gap-2">
+                    <i class="fas fa-brain text-purple-500"></i>
+                    AI Study Recommendations
+                </h3>
+                <button onclick="closeStudyModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4" id="study-content">
+                <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-6 rounded-xl border border-purple-200">
+                    <h4 class="font-bold text-purple-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-lightbulb text-outGold-500"></i>
+                        Based on Your Interests
+                    </h4>
+                    <p class="text-sm text-slate-600 mb-4">Our AI has analyzed popular research trends and recommends these resources:</p>
+                    
+                    <div class="space-y-3" id="ai-recommendations">
+                        <!-- AI recommendations injected here -->
+                    </div>
+                </div>
+                
+                <div class="bg-outGold-50 p-4 rounded-xl border border-outGold-200">
+                    <h4 class="font-bold text-outBlue-900 mb-2 flex items-center gap-2">
+                        <i class="fas fa-clock text-outGold-600"></i>
+                        Optimal Study Schedule
+                    </h4>
+                    <p class="text-sm text-slate-600">AI analysis suggests studying between <strong>6:00 AM - 9:00 AM</strong> and <strong>7:00 PM - 10:00 PM</strong> for maximum retention.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credential Request Modal -->
+    <div id="credential-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60] backdrop-blur-sm">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-95 opacity-0 transition-all duration-300" id="credential-content">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-outGold-100 rounded-full flex items-center justify-center text-outGold-600 text-2xl mx-auto mb-4">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-outBlue-900">Premium Access Required</h3>
+                <p class="text-slate-600 mt-2">This resource requires institutional credentials.</p>
+            </div>
+            
+            <div class="bg-outBlue-50 p-4 rounded-xl mb-6 border border-outBlue-100">
+                <h4 class="font-bold text-outBlue-900 mb-2 text-sm uppercase">Access Methods:</h4>
+                <ul class="list-decimal list-inside text-sm text-slate-700 space-y-2">
+                    <li>Send email to <strong>librarian@out.ac.tz</strong></li>
+                    <li>Include Student/Staff ID</li>
+                    <li>Subject: "Database Access"</li>
+                    <li>Or use <strong>AI Chat</strong> for instant help</li>
+                </ul>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="closeCredentialModal()" class="w-full bg-outBlue-600 text-white py-3 rounded-xl font-bold hover:bg-outBlue-700 transition">
+                    Understood
+                </button>
+                <button onclick="toggleChat(); closeCredentialModal();" class="w-full bg-outGold-500 text-outBlue-900 py-3 rounded-xl font-bold hover:bg-outGold-400 transition">
+                    <i class="fas fa-robot mr-2"></i>Ask AI for Help
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- BUBBLE ANIMATION SYSTEM ---
+        const canvas = document.getElementById('bubble-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let bubbles = [];
+        const shapes = ['circle', 'hexagon', 'star', 'triangle', 'diamond'];
+        const colors = [
+            'rgba(30, 58, 138, 0.15)',   // outBlue-900
+            'rgba(245, 158, 11, 0.12)',  // outGold-500
+            'rgba(37, 99, 235, 0.1)',    // outBlue-600
+            'rgba(251, 191, 36, 0.08)',  // outGold-400
+            'rgba(30, 58, 138, 0.08)',   // outBlue lighter
+        ];
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        class Bubble {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 100;
+                this.size = Math.random() * 60 + 20;
+                this.speedY = Math.random() * 0.8 + 0.2;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.shape = shapes[Math.floor(Math.random() * shapes.length)];
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.wobble = Math.random() * Math.PI * 2;
+                this.wobbleSpeed = 0.02 + Math.random() * 0.03;
+            }
+            
+            update() {
+                this.y -= this.speedY;
+                this.x += Math.sin(this.wobble) * 0.5 + this.speedX;
+                this.rotation += this.rotationSpeed;
+                this.wobble += this.wobbleSpeed;
+                
+                if (this.y < -this.size * 2) {
+                    this.reset();
+                }
+            }
+            
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                
+                switch(this.shape) {
+                    case 'circle':
+                        ctx.beginPath();
+                        ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'hexagon':
+                        this.drawPolygon(6, this.size);
+                        break;
+                    case 'star':
+                        this.drawStar(0, 0, 5, this.size, this.size * 0.4);
+                        break;
+                    case 'triangle':
+                        this.drawPolygon(3, this.size);
+                        break;
+                    case 'diamond':
+                        this.drawPolygon(4, this.size);
+                        break;
+                }
+                
+                // Add glow effect
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+            
+            drawPolygon(sides, radius) {
+                ctx.beginPath();
+                for (let i = 0; i < sides; i++) {
+                    const angle = (i / sides) * Math.PI * 2 - Math.PI / 2;
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+            }
+            
+            drawStar(cx, cy, spikes, outerRadius, innerRadius) {
+                let rot = Math.PI / 2 * 3;
+                let x = cx;
+                let y = cy;
+                let step = Math.PI / spikes;
+                
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - outerRadius);
+                for (let i = 0; i < spikes; i++) {
+                    x = cx + Math.cos(rot) * outerRadius;
+                    y = cy + Math.sin(rot) * outerRadius;
+                    ctx.lineTo(x, y);
+                    rot += step;
+                    
+                    x = cx + Math.cos(rot) * innerRadius;
+                    y = cy + Math.sin(rot) * innerRadius;
+                    ctx.lineTo(x, y);
+                    rot += step;
+                }
+                ctx.lineTo(cx, cy - outerRadius);
+                ctx.closePath();
+            }
+        }
+        
+        // Create bubbles
+        for (let i = 0; i < 25; i++) {
+            bubbles.push(new Bubble());
+            // Stagger initial positions
+            bubbles[i].y = Math.random() * canvas.height;
+        }
+        
+        function animateBubbles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            bubbles.forEach(bubble => {
+                bubble.update();
+                bubble.draw();
+            });
+            
+            requestAnimationFrame(animateBubbles);
+        }
+        
+        animateBubbles();
+
+        // --- DATA: All Resources Organized into 5 Categories ---
+        const resourcesDB = [
+            // 1. PREMIUM DATABASES (Subscribed)
+            { name: "EBSCOhost", type: "premium", desc: "Multidisciplinary research database with 11,000+ full text journals.", url: "https://search.ebscohost.com", icon: "fa-database", color: "amber" },
+            { name: "Emerald Insight", type: "premium", desc: "Management, Engineering, and Education research.", url: "http://www.emeraldinsight.com", icon: "fa-book-reader", color: "amber" },
+            { name: "JSTOR", type: "premium", desc: "Humanities, Social Sciences, and History archives.", url: "https://www.jstor.org", icon: "fa-landmark", color: "amber" },
+            { name: "SAGE Journals", type: "premium", desc: "Social Sciences, Humanities, and STM research.", url: "https://journals.sagepub.com", icon: "fa-feather-alt", color: "amber" },
+            { name: "Taylor & Francis", type: "premium", desc: "Social Sciences, Humanities, and Science publications.", url: "https://www.tandfonline.com", icon: "fa-book", color: "amber" },
+            { name: "Research4Life", type: "premium", desc: "HINARI, AGORA, OARE, ARDI, GOALI programs.", url: "https://www.research4life.org", icon: "fa-globe-africa", color: "amber" },
+
+            // 2. OPEN ACCESS JOURNALS (General)
+            { name: "African Journal Archive", type: "oajournals", desc: "African published journals covering diverse subjects.", url: "https://journals.co.za", icon: "fa-globe-africa", color: "emerald" },
+            { name: "DOAJ", type: "oajournals", desc: "Directory of Open Access Journals - curated list.", url: "https://doaj.org", icon: "fa-list-alt", color: "emerald" },
+            { name: "Google Scholar", type: "oajournals", desc: "Broad scholarly literature search across disciplines.", url: "https://scholar.google.com", icon: "fa-google", color: "emerald" },
+            { name: "PubMed Central", type: "oajournals", desc: "Biomedical and life sciences journal archive.", url: "https://pubmed.ncbi.nlm.nih.gov", icon: "fa-heartbeat", color: "emerald" },
+
+            // 3. OPEN SCIENCE JOURNALS (STEM Focused)
+            { name: "Bioline International", type: "oscience", desc: "Bioscience journals from developing countries.", url: "http://bioline.org.br", icon: "fa-dna", color: "cyan" },
+            { name: "BioMed Central", type: "oscience", desc: "Science, Technology, and Medicine open access.", url: "https://www.biomedcentral.com", icon: "fa-microscope", color: "cyan" },
+            { name: "PLOS ONE", type: "oscience", desc: "Multidisciplinary peer-reviewed open science journal.", url: "https://journals.plos.org/plosone/", icon: "fa-flask", color: "cyan" },
+            { name: "Royal Society Open Science", type: "oscience", desc: "High quality open science research publications.", url: "https://royalsocietypublishing.org", icon: "fa-crown", color: "cyan" },
+
+            // 4. OPEN TEXTBOOKS (Open Access Books)
+            { name: "BC Campus Open Ed", type: "textbooks", desc: "High quality post-secondary open textbooks.", url: "https://open.bccampus.ca", icon: "fa-graduation-cap", color: "purple" },
+            { name: "Directory of Open Access Books", type: "textbooks", desc: "Peer-reviewed open access books repository.", url: "http://www.doabooks.org", icon: "fa-book-open", color: "purple" },
+            { name: "Edinburgh University Press", type: "textbooks", desc: "Humanities and Social Sciences open books.", url: "https://edinburghuniversitypress.com", icon: "fa-university", color: "purple" },
+            { name: "JSTOR Open Access", type: "textbooks", desc: "12,000+ open access books and chapters.", url: "https://about.jstor.org/whats-in-jstor/books/open-access-books-jstor/", icon: "fa-book", color: "purple" },
+            { name: "Open Book Publishers", type: "textbooks", desc: "Humanities and Social Sciences free books.", url: "http://www.openbookpublishers.com", icon: "fa-book", color: "purple" },
+            { name: "Oxford University Press", type: "textbooks", desc: "Open access academic textbooks.", url: "https://academic.oup.com/books", icon: "fa-university", color: "purple" },
+            { name: "Project Gutenberg", type: "textbooks", desc: "Free eBooks and classic literature.", url: "http://www.gutenberg.org", icon: "fa-book", color: "purple" },
+            { name: "Springer Open", type: "textbooks", desc: "Science, Technology, Medicine open books.", url: "https://link.springer.com", icon: "fa-atom", color: "purple" },
+
+            // 5. OPEN COURSEWARE
+            { name: "MIT OpenCourseWare", type: "courseware", desc: "MIT course materials and lecture notes.", url: "https://ocw.mit.edu", icon: "fa-laptop-code", color: "pink" },
+            { name: "OpenLearn", type: "courseware", desc: "Free courses from The Open University UK.", url: "https://www.open.edu/openlearn", icon: "fa-graduation-cap", color: "pink" },
+            { name: "OER Africa", type: "courseware", desc: "African-focused Open Educational Resources.", url: "https://www.oerafrica.org", icon: "fa-globe-africa", color: "pink" },
+            { name: "Open Yale Courses", type: "courseware", desc: "Yale University lecture recordings and materials.", url: "https://oyc.yale.edu", icon: "fa-university", color: "pink" },
+            { name: "Carnegie Mellon OLI", type: "courseware", desc: "Open Learning Initiative courses.", url: "http://oli.cmu.edu", icon: "fa-chalkboard-teacher", color: "pink" }
+        ];
+
+        const categoryInfo = {
+            premium: {
+                title: "Premium Databases",
+                desc: "Institutionally subscribed resources requiring OUT credentials. Includes EBSCOhost, JSTOR, Emerald, and Research4Life programs."
+            },
+            oajournals: {
+                title: "Open Access Journals",
+                desc: "Freely accessible scholarly journals across all disciplines. No subscription required."
+            },
+            oscience: {
+                title: "Open Science Journals",
+                desc: "STEM-focused open access publications covering bioscience, medicine, and technical research."
+            },
+            textbooks: {
+                title: "Open Textbooks",
+                desc: "Free textbooks and open educational books for undergraduate and postgraduate studies."
+            },
+            courseware: {
+                title: "Open Courseware",
+                desc: "Complete course materials, lectures, and learning resources from leading universities."
+            }
+        };
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderResources('all');
+            initCounters();
+            initScrollAnimations();
+            initReadingProgress();
+            updateDashboard();
+        });
+
+        // --- READING PROGRESS ---
+        function initReadingProgress() {
+            window.addEventListener('scroll', () => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                document.getElementById('reading-progress').style.width = scrolled + "%";
+            });
+        }
+
+        // --- AI DASHBOARD ---
+        function updateDashboard() {
+            // Simulate AI dashboard data
+            const saved = Math.floor(Math.random() * 20) + 5;
+            const hours = Math.floor(Math.random() * 40) + 10;
+            const suggestions = Math.floor(Math.random() * 15) + 3;
+            
+            document.getElementById('saved-papers').textContent = saved;
+            document.getElementById('reading-time').textContent = hours + 'h';
+            document.getElementById('ai-suggestions').textContent = suggestions;
+        }
+
+        function summarizeLastPaper() {
+            addChatMessage("Summarize my last viewed paper", 'user');
+            setTimeout(() => {
+                addChatMessage("📄 <strong>Summary of 'Agricultural Innovation in East Africa':</strong><br><br>This paper examines sustainable farming techniques adopted in Tanzania (2019-2024). Key findings include 40% yield improvement using drip irrigation and a 25% reduction in water usage. The study recommends government subsidies for small-scale farmers.<br><br><em>Reading time: 15 mins | Citations: 45</em>", 'bot');
+            }, 1500);
+        }
+
+        function findRelatedResources() {
+            addChatMessage("Find related resources", 'user');
+            setTimeout(() => {
+                addChatMessage("🔗 <strong>Related Resources Found:</strong><br><br>1. <strong>Tanzania Agricultural Journal</strong> - OA Journal<br>2. <strong>Springer Open: Agriculture</strong> - Open Textbook<br>3. <strong>Research4Life: AGORA</strong> - Premium Database<br><br>Would you like me to open any of these?", 'bot');
+            }, 1500);
+        }
+
+        function generateReadingList() {
+            const recommendations = [
+                {name: "Introduction to Sustainable Agriculture", type: "Open Textbook", time: "4 hours"},
+                {name: "Climate Change in East Africa", type: "OA Journal", time: "2 hours"},
+                {name: "Food Security Policies", type: "Premium Database", time: "3 hours"}
+            ];
+            
+            let html = '<div class="space-y-3">';
+            recommendations.forEach((rec, i) => {
+                html += `
+                    <div class="flex items-center justify-between bg-white p-3 rounded-lg border border-slate-200">
+                        <div>
+                            <div class="font-bold text-sm text-slate-800">${i+1}. ${rec.name}</div>
+                            <div class="text-xs text-slate-500">${rec.type} • Est. ${rec.time}</div>
+                        </div>
+                        <button class="text-outBlue-600 hover:text-outBlue-800"><i class="fas fa-plus-circle"></i></button>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            document.getElementById('ai-recommendations').innerHTML = html;
+            document.getElementById('study-modal').classList.remove('hidden');
+            document.getElementById('study-modal').classList.add('flex');
+        }
+
+        // --- VOICE SEARCH ---
+        let recognition;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('hero-search').value = transcript;
+                closeVoiceModal();
+                performHeroSearch();
+            };
+            
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error', event.error);
+                closeVoiceModal();
+                alert('Voice recognition error. Please try again.');
+            };
+        }
+
+        function toggleVoiceSearch() {
+            if (!recognition) {
+                alert('Voice search is not supported in your browser. Please use Chrome or Edge.');
+                return;
+            }
+            document.getElementById('voice-modal').classList.remove('hidden');
+            document.getElementById('voice-modal').classList.add('flex');
+            recognition.start();
+        }
+
+        function closeVoiceModal() {
+            document.getElementById('voice-modal').classList.add('hidden');
+            document.getElementById('voice-modal').classList.remove('flex');
+            if (recognition) recognition.stop();
+        }
+
+        function toggleVoiceInChat() {
+            if (!recognition) {
+                alert('Voice input not supported');
+                return;
+            }
+            recognition.start();
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('chat-input').value = transcript;
+            };
+        }
+
+        // --- SMART CITATION GENERATOR ---
+        function generateSmartCitation() {
+            document.getElementById('citation-modal').classList.remove('hidden');
+            document.getElementById('citation-modal').classList.add('flex');
+        }
+
+        function closeCitationModal() {
+            document.getElementById('citation-modal').classList.add('hidden');
+            document.getElementById('citation-modal').classList.remove('flex');
+        }
+
+        function generateCitation() {
+            const title = document.getElementById('cite-title').value || 'Sample Research Title';
+            const author = document.getElementById('cite-author').value || 'Author Name';
+            const year = document.getElementById('cite-year').value || '2024';
+            const style = document.getElementById('cite-style').value;
+            
+            let citation = '';
+            
+            switch(style) {
+                case 'apa':
+                    citation = `${author}. (${year}). <em>${title}</em>. Open University Press.`;
+                    break;
+                case 'mla':
+                    citation = `${author}. "<em>${title}</em>." Open University Press, ${year}.`;
+                    break;
+                case 'harvard':
+                    citation = `${author} (${year}) <em>${title}</em>. Dar es Salaam: Open University Press.`;
+                    break;
+                case 'chicago':
+                    citation = `${author}. <em>${title}</em>. Dar es Salaam: Open University Press, ${year}.`;
+                    break;
+                case 'ieee':
+                    citation = `[1] ${author}, "<em>${title}</em>," Open University Press, ${year}.`;
+                    break;
+            }
+            
+            document.getElementById('citation-output').innerHTML = citation;
+            document.getElementById('citation-result').classList.remove('hidden');
+        }
+
+        function copyCitation() {
+            const text = document.getElementById('citation-output').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Citation copied to clipboard!');
+            });
+        }
+
+        // --- STUDY RECOMMENDATIONS ---
+        function getStudyRecommendations() {
+            generateReadingList();
+        }
+
+        function closeStudyModal() {
+            document.getElementById('study-modal').classList.add('hidden');
+            document.getElementById('study-modal').classList.remove('flex');
+        }
+
+        // --- RENDER RESOURCES ---
+        function renderResources(filter) {
+            const grid = document.getElementById('resource-grid');
+            const infoDiv = document.getElementById('category-info');
+            const catTitle = document.getElementById('cat-title');
+            const catDesc = document.getElementById('cat-desc');
+            
+            grid.innerHTML = '';
+            
+            if(filter !== 'all' && categoryInfo[filter]) {
+                infoDiv.classList.remove('hidden');
+                catTitle.textContent = categoryInfo[filter].title;
+                catDesc.textContent = categoryInfo[filter].desc;
+            } else {
+                infoDiv.classList.add('hidden');
+            }
+            
+            const filtered = filter === 'all' ? resourcesDB : resourcesDB.filter(r => r.type === filter);
+            
+            filtered.forEach(r => {
+                const card = document.createElement('div');
+                card.className = 'resource-card tilt-card group bg-white p-6 rounded-2xl shadow-lg border border-slate-100 relative overflow-hidden';
+                
+                const colorMap = {
+                    amber: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', badge: 'premium-badge', icon: 'text-amber-600' },
+                    emerald: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', badge: 'oa-badge', icon: 'text-emerald-600' },
+                    cyan: { bg: 'bg-cyan-50', text: 'text-cyan-700', border: 'border-cyan-200', badge: 'science-badge', icon: 'text-cyan-600' },
+                    purple: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200', badge: 'textbook-badge', icon: 'text-purple-600' },
+                    pink: { bg: 'bg-pink-50', text: 'text-pink-700', border: 'border-pink-200', badge: 'course-badge', icon: 'text-pink-600' }
+                };
+                
+                const theme = colorMap[r.color] || colorMap.emerald;
+                const isPremium = r.type === 'premium';
+                
+                card.innerHTML = `
+                    <div class="absolute top-0 right-0 w-24 h-24 ${theme.bg} rounded-bl-full -mr-4 -mt-4 transition group-hover:scale-110"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 ${theme.bg} rounded-xl flex items-center justify-center ${theme.icon} text-xl shadow-sm">
+                                <i class="fas ${r.icon}"></i>
+                            </div>
+                            <span class="${theme.badge} text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide shadow-sm">
+                                ${isPremium ? '<i class="fas fa-lock mr-1"></i>' : '<i class="fas fa-unlock mr-1"></i>'}
+                                ${r.type === 'premium' ? 'Premium' : 
+                                  r.type === 'oajournals' ? 'OA Journal' : 
+                                  r.type === 'oscience' ? 'Open Science' : 
+                                  r.type === 'textbooks' ? 'Open Text' : 'Courseware'}
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2 group-hover:text-outBlue-600 transition line-clamp-1">${r.name}</h3>
+                        <p class="text-sm text-slate-500 mb-6 h-10 line-clamp-2">${r.desc}</p>
+                        <div class="flex gap-2">
+                            ${isPremium ? `<button onclick="showCredentialModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-2 rounded-lg transition flex items-center justify-center gap-1">
+                                <i class="fas fa-info-circle"></i> Access Info
+                            </button>` : ''}
+                            <a href="${r.url}" target="_blank" class="flex-1 bg-outBlue-600 hover:bg-outBlue-700 text-white text-center text-xs font-bold py-2 rounded-lg transition shadow-md flex items-center justify-center gap-1">
+                                Visit <i class="fas fa-external-link-alt text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                card.addEventListener('mousemove', handleTilt);
+                card.addEventListener('mouseleave', resetTilt);
+                
+                grid.appendChild(card);
+            });
+        }
+
+        function filterResources(type) {
+            document.querySelectorAll('.category-tab').forEach(btn => {
+                if(btn.dataset.filter === type) {
+                    btn.classList.add('active');
+                    btn.classList.remove('bg-white', 'text-slate-600');
+                } else {
+                    btn.classList.remove('active');
+                    btn.classList.add('bg-white', 'text-slate-600');
+                }
+            });
+            renderResources(type);
+        }
+
+        // --- 3D TILT EFFECT ---
+        function handleTilt(e) {
+            const card = e.currentTarget;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -5;
+            const rotateY = ((x - centerX) / centerX) * 5;
+
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        }
+
+        function resetTilt(e) {
+            e.currentTarget.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
+        }
+
+        // --- SMART SEARCH ---
+        function showSmartSuggestions(value) {
+            const suggestions = document.getElementById('smart-suggestions');
+            if (value.length > 0) {
+                suggestions.classList.remove('hidden');
+            } else {
+                suggestions.classList.add('hidden');
+            }
+        }
+
+        function quickSearch(term) {
+            document.getElementById('hero-search').value = term;
+            document.getElementById('smart-suggestions').classList.add('hidden');
+            performHeroSearch();
+        }
+
+        function handleSmartSearch(e) {
+            if (e.key === 'Enter') {
+                performHeroSearch();
+            }
+        }
+
+        // --- CHATBOT LOGIC ---
+        function toggleChat() {
+            const chat = document.getElementById('chat-widget');
+            chat.classList.toggle('hidden');
+            chat.classList.toggle('flex');
+            if (!chat.classList.contains('hidden')) {
+                document.getElementById('chat-input').focus();
+            }
+        }
+
+        function sendQuickMessage(msg) {
+            addChatMessage(msg, 'user');
+            showTyping();
+            setTimeout(() => {
+                removeTyping();
+                const response = generateAIResponse(msg);
+                addChatMessage(response, 'bot');
+            }, 1000);
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if(!msg) return;
+
+            addChatMessage(msg, 'user');
+            input.value = '';
+            showTyping();
+
+            setTimeout(() => {
+                removeTyping();
+                const response = generateAIResponse(msg);
+                addChatMessage(response, 'bot');
+            }, 1500);
+        }
+
+        function addChatMessage(text, sender) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.className = 'flex gap-3 animate-fade-in';
+            
+            if(sender === 'user') {
+                div.innerHTML = `
+                    <div class="ml-auto bg-outBlue-600 text-white p-3 rounded-2xl rounded-tr-none shadow-md text-sm max-w-[80%]">
+                        ${text}
+                    </div>
+                `;
+            } else {
+                div.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-outGold-100 flex items-center justify-center text-outGold-600 flex-shrink-0 border border-outGold-200">
+                        <i class="fas fa-robot text-xs"></i>
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-sm text-slate-700 border border-slate-100 max-w-[80%] leading-relaxed">
+                        ${text}
+                    </div>
+                `;
+            }
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showTyping() {
+            const container = document.getElementById('chat-messages');
+            const id = 'typing-indicator';
+            if(document.getElementById(id)) return;
+            
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'flex gap-3';
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-outGold-100 flex items-center justify-center text-outGold-600 flex-shrink-0 border border-outGold-200">
+                    <i class="fas fa-robot text-xs"></i>
+                </div>
+                <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 flex items-center gap-1">
+                    <div class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></div>
+                    <div class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></div>
+                    <div class="w-2 h-2 bg-slate-400 rounded-full typing-dot"></div>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function removeTyping() {
+            const el = document.getElementById('typing-indicator');
+            if(el) el.remove();
+        }
+
+        // --- SEMANTIC UNDERSTANDING ENGINE ---
+        function generateAIResponse(input) {
+            const q = input.toLowerCase();
+            let scores = [];
+
+            resourcesDB.forEach(res => {
+                let score = 0;
+                const name = res.name.toLowerCase();
+                const desc = res.desc.toLowerCase();
+                const keywords = q.split(' ');
+                
+                if(q.includes(name)) score += 10;
+                keywords.forEach(k => { if(name.includes(k)) score += 3; });
+                keywords.forEach(k => { if(desc.includes(k)) score += 2; });
+                
+                if(score > 0) scores.push({ res, score });
+            });
+
+            scores.sort((a,b) => b.score - a.score);
+
+            // Special AI responses
+            if(q.includes('cite') || q.includes('citation')) {
+                return "📚 <strong>AI Citation Generator Ready!</strong><br><br>I can create citations in APA, MLA, Harvard, Chicago, or IEEE format. Click the <strong>quote icon</strong> on the right side of the screen or tell me the paper details here!";
+            }
+            
+            if(q.includes('recommend') || q.includes('suggest') || q.includes('study')) {
+                return "🎯 <strong>Personalized Study Plan:</strong><br><br>Based on current trends, I recommend:<br>1. <strong>Morning (6-9 AM):</strong> Heavy reading<br>2. <strong>Afternoon:</strong> Research & citations<br>3. <strong>Evening (7-10 PM):</strong> Review & notes<br><br>Would you like me to generate a specific reading list?";
+            }
+            
+            if(q.includes('voice') || q.includes('speak') || q.includes('microphone')) {
+                return "🎤 <strong>Voice Search Enabled!</strong><br><br>Click the microphone icon in the search bar or chat input to use voice commands. I understand natural language like <em>'Find me journals about agriculture'</em> or <em>'Open JSTOR'</em>.";
+            }
+            
+            if(q.includes('summarize') || q.includes('summary')) {
+                return "📝 <strong>AI Summarization Active!</strong><br><br>I can summarize research papers, extract key findings, and estimate reading time. Just share the paper title or URL, and I'll provide a concise overview with main points and citations.";
+            }
+
+            if(q.includes('hour') || q.includes('open') || q.includes('time')) {
+                return "⏰ <strong>Library Hours:</strong><br><strong>Mon-Fri:</strong> 8:45 AM - 9:00 PM<br><strong>Sat:</strong> 10:00 AM - 9:00 PM<br><strong>Sun:</strong> 10:00 AM - 2:00 PM<br><br><em>AI Tip: Best study times are 6-9 AM and 7-10 PM!</em>";
+            }
+            
+            if(q.includes('password') || q.includes('login') || q.includes('credential')) {
+                return "🔐 <strong>Premium Access:</strong><br><br>For subscribed databases (EBSCO, JSTOR, etc.), email <strong>librarian@out.ac.tz</strong> with your Student/Staff ID, or I can help you find open access alternatives instantly!";
+            }
+
+            if(scores.length > 0 && scores[0].score > 2) {
+                const best = scores[0].res;
+                const typeLabel = best.type === 'premium' ? 'a premium database' : 'an open access resource';
+                return `✨ <strong>Perfect Match Found!</strong><br><br><strong>${best.name}</strong> (${typeLabel})<br>${best.desc}<br><br><a href="${best.url}" target="_blank" class="text-outBlue-600 font-bold underline">Access Resource</a><br><br><em>Need help citing this? Ask me!</em>`;
+            }
+
+            return "🤔 <strong>I'm here to help!</strong><br><br>Try asking me:<br>• <em>'Find agriculture journals'</em><br>• <em>'Generate citation'</em><br>• <em>'Study recommendations'</em><br>• <em>'Voice search help'</em><br><br>Or use the quick action buttons above!";
+        }
+
+        // --- ACCESSIBILITY FUNCTIONS ---
+        let ttsEnabled = false;
+        const synth = window.speechSynthesis;
+
+        function toggleA11yMenu() {
+            document.getElementById('a11y-menu').classList.toggle('hidden');
+        }
+
+        function toggleTTS() {
+            ttsEnabled = !ttsEnabled;
+            const btn = document.getElementById('tts-btn');
+            if(ttsEnabled) {
+                btn.classList.add('bg-outBlue-100', 'text-outBlue-800');
+                alert("Text-to-Speech enabled. Select any text to hear it.");
+                document.body.addEventListener('mouseup', handleTTS);
+            } else {
+                btn.classList.remove('bg-outBlue-100', 'text-outBlue-800');
+                document.body.removeEventListener('mouseup', handleTTS);
+                synth.cancel();
+            }
+        }
+
+        function handleTTS() {
+            if(!ttsEnabled) return;
+            const selection = window.getSelection().toString();
+            if(selection.length > 0) {
+                synth.cancel();
+                const utter = new SpeechSynthesisUtterance(selection);
+                utter.rate = 0.9;
+                synth.speak(utter);
+            }
+        }
+
+        function toggleContrast() {
+            document.body.classList.toggle('high-contrast');
+        }
+
+        function toggleDyslexia() {
+            document.body.classList.toggle('dyslexia-mode');
+        }
+
+        let bigCursor = false;
+        function toggleCursor() {
+            bigCursor = !bigCursor;
+            if(bigCursor) {
+                document.body.style.cursor = 'url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 24 24\' fill=\'%23f59e0b\' stroke=\'black\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>"), auto';
+            } else {
+                document.body.style.cursor = 'auto';
+            }
+        }
+
+        let fontSize = 100;
+        function changeFontSize(dir) {
+            fontSize += dir * 10;
+            if(fontSize < 80) fontSize = 80;
+            if(fontSize > 150) fontSize = 150;
+            document.documentElement.style.fontSize = fontSize + '%';
+        }
+
+        // --- UTILS ---
+        function performHeroSearch() {
+            const type = document.getElementById('hero-search-type').value;
+            const query = document.getElementById('hero-search').value;
+            if(!query) return;
+            
+            let url;
+            if(type === 'koha') url = `https://koha.out.ac.tz/cgi-bin/koha/opac-search.pl?q=${query}`;
+            else if(type === 'repo') url = `https://repository.out.ac.tz/discover?query=${query}`;
+            else if(type === 'ai') {
+                addChatMessage(`Search for: ${query}`, 'user');
+                toggleChat();
+                return;
+            }
+            else url = `https://scholar.google.com/scholar?q=${query}`;
+            
+            window.open(url, '_blank');
+        }
+
+        function showCredentialModal() {
+            const modal = document.getElementById('credential-modal');
+            const content = document.getElementById('credential-content');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeCredentialModal() {
+            const modal = document.getElementById('credential-modal');
+            const content = document.getElementById('credential-content');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        document.getElementById('credential-modal').addEventListener('click', function(e) {
+            if(e.target === this) closeCredentialModal();
+        });
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function initCounters() {
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const increment = target / 100;
+                
+                const updateCounter = () => {
+                    const c = +counter.innerText.replace(/,/g, '');
+                    if(c < target) {
+                        counter.innerText = Math.ceil(c + increment).toLocaleString();
+                        setTimeout(updateCounter, 20);
+                    } else {
+                        counter.innerText = target.toLocaleString() + "+";
+                    }
+                };
+                updateCounter();
+            });
+        }
+
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        entry.target.classList.remove('opacity-0', 'translate-y-10');
+                    }
+                });
+            });
+
+            document.querySelectorAll('section').forEach((section) => {
+                section.classList.add('transition', 'duration-1000', 'opacity-0', 'translate-y-10');
+                observer.observe(section);
+            });
+        }
+    </script>
+</body>
+</html>
